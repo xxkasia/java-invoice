@@ -3,10 +3,17 @@ package pl.edu.agh.mwo.invoice;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringJoiner;
 
+import pl.edu.agh.mwo.invoice.product.DairyProduct;
 import pl.edu.agh.mwo.invoice.product.Product;
 
+
+
 public class Invoice {
+
+    protected int invoiceNumber = 0;
+
     private Map<Product, Integer> products = new HashMap<Product, Integer>();
 
     public void addProduct(Product product) {
@@ -41,4 +48,19 @@ public class Invoice {
         }
         return totalGross;
     }
+
+    public void print() {
+        StringJoiner sj = new StringJoiner("\n");
+        sj.add(Integer.toString(invoiceNumber++));
+        for (Map.Entry<Product, Integer> entry : products.entrySet()) {
+            String text = "";
+            text += entry.getKey();
+            text += entry.getValue();
+            text += entry.getKey().getPrice();
+            sj.add(text);
+        }
+        System.out.println(sj);
+    }
+
 }
+
