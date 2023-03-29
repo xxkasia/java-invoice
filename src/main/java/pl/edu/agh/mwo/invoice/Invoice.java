@@ -12,7 +12,12 @@ import pl.edu.agh.mwo.invoice.product.Product;
 
 public class Invoice {
 
-    protected int invoiceNumber = 0;
+    private int invoiceNumber = 0;
+    private static int lastInvoiceNumber = 0;
+
+    public Invoice() {
+        invoiceNumber = ++lastInvoiceNumber;
+    }
 
     private Map<Product, Integer> products = new HashMap<Product, Integer>();
 
@@ -24,8 +29,14 @@ public class Invoice {
         if (product == null || quantity <= 0) {
             throw new IllegalArgumentException();
         }
-        products.put(product, quantity);
+        if (products.containsKey(product)) {
+            products.put(product, products.get(product) + quantity);
+        } else {
+            products.put(product, quantity);
+        }
     }
+
+
 
     public BigDecimal getNetTotal() {
         BigDecimal totalNet = BigDecimal.ZERO;
@@ -50,17 +61,20 @@ public class Invoice {
     }
 
     public void print() {
-        StringJoiner sj = new StringJoiner("\n");
-        sj.add(Integer.toString(invoiceNumber++));
+        String text = "";
+        int positions = 0;
+
+        text += "Invoice number: " + Integer.toString(invoiceNumber) + "\n";
+
         for (Map.Entry<Product, Integer> entry : products.entrySet()) {
-            String text = "";
-            text += entry.getKey();
-            text += entry.getValue();
-            text += entry.getKey().getPrice();
-            sj.add(text);
+            text += entry.getKey() + " "; // dodaje nazwe - wywoluje sie toString()
+            text += "Quantity: " + entry.getValue() + "\n" ; // dodaje ilosc
+            positions ++;
         }
-        System.out.println(sj);
+        text += "Liczba pozycji: " + Integer.toString(positions);
+        System.out.println(text + "\n");
     }
+
 
 }
 
